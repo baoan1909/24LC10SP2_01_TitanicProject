@@ -19,18 +19,18 @@ def update_page_info(current_page_var, page_info_var, df, rows_per_page):
     current = current_page_var.get() + 1
     page_info_var.set(f"Trang {current} / {total_pages}")
 
-def previous_page(filtered_df, current_page_var, rows_per_page, table, page_info_var):
+def previous_page(df, current_page_var, rows_per_page, table, page_info_var):
     if current_page_var.get() > 0:
         current_page_var.set(current_page_var.get() - 1)
-        update_table(table, filtered_df, current_page_var.get(), rows_per_page)
-        update_page_info(current_page_var, page_info_var, filtered_df, rows_per_page)
+        update_table(table, df, current_page_var.get(), rows_per_page)
+        update_page_info(current_page_var, page_info_var, df, rows_per_page)
 
-def next_page(filtered_df, current_page_var, rows_per_page, table, page_info_var):
-    total_pages = (len(filtered_df) - 1) // rows_per_page
+def next_page(df, current_page_var, rows_per_page, table, page_info_var):
+    total_pages = (len(df) - 1) // rows_per_page
     if current_page_var.get() < total_pages:
         current_page_var.set(current_page_var.get() + 1)
-        update_table(table, filtered_df, current_page_var.get(), rows_per_page)
-        update_page_info(current_page_var, page_info_var, filtered_df, rows_per_page)
+        update_table(table, df, current_page_var.get(), rows_per_page)
+        update_page_info(current_page_var, page_info_var, df, rows_per_page)
 
 def filter_data(df, sex_value, pclass_value):
     """Trả về DataFrame đã lọc"""
@@ -43,18 +43,26 @@ def filter_data(df, sex_value, pclass_value):
 
 def add_row(df, cols, entry_vars, tree):
     try:
-        new_data = {col: entry_vars[col].get() for col in cols}
-        new_data['PassengerId'] = int(new_data['PassengerId'])
+        # Lấy dữ liệu từ form, bỏ qua PassengerId
+        new_data = {col: entry_vars[col].get() for col in cols if col != 'PassengerId'}
+
+        # Tự động sinh PassengerId mới
+        new_id = int(df['PassengerId'].max()) + 1 if not df.empty else 1
+        new_data['PassengerId'] = new_id
+
+        # Chuyển kiểu dữ liệu phù hợp
+        new_data['Survived'] = int(new_data['Survived'])
         new_data['Pclass'] = int(new_data['Pclass'])
         new_data['Age'] = float(new_data['Age'])
         new_data['SibSp'] = int(new_data['SibSp'])
         new_data['Parch'] = int(new_data['Parch'])
         new_data['Fare'] = float(new_data['Fare'])
-        new_data['Survived'] = int(new_data['Survived'])
 
         df.loc[len(df)] = new_data
         update_table(tree, df)
         clear_form(entry_vars)
+
+        messagebox.showinfo("Thành công", "Thêm hành khách thành công!")
     except Exception as e:
         messagebox.showerror("Lỗi", f"Dữ liệu không hợp lệ:\n{str(e)}")
 
@@ -66,7 +74,13 @@ def edit_row(df, cols, entry_vars, tree):
     try:
         idx = tree.index(selected[0])
         for col in cols:
-            df.at[idx, col] = type(df[col].iloc[0])(entry_vars[col].get())
+            val = entry_vars[col].get()
+            if col in ['PassengerId', 'Pclass', 'SibSp', 'Parch', 'Survived']:
+                df.at[idx, col] = int(val)
+            elif col in ['Age', 'Fare']:
+                df.at[idx, col] = float(val)
+            else:
+                df.at[idx, col] = val
         update_table(tree, df)
         clear_form(entry_vars)
     except Exception as e:

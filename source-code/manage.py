@@ -68,8 +68,23 @@ def manage_frame(app, df):
     for i, col in enumerate(cols):
         ttk.Label(frame_form, text=col).grid(row=i//4, column=(i%4)*2, sticky=E, padx=5, pady=5)
         var = ttk.StringVar()
-        ttk.Entry(frame_form, textvariable=var, width=15).grid(row=i//4, column=(i%4)*2 + 1, padx=5, pady=5)
+
+        if col == 'Sex':
+            widget = ttk.Combobox(frame_form, textvariable=var, values=["male", "female"], width=15)
+        elif col == 'Survived':
+            widget = ttk.Combobox(frame_form, textvariable=var, values=["0", "1"], width=15)
+        elif col == 'Pclass':
+            widget = ttk.Combobox(frame_form, textvariable=var, values=["1", "2", "3"], width=15)
+        elif col == 'Embarked':
+            widget = ttk.Combobox(frame_form, textvariable=var, values=["C", "Q", "S"], width=15)
+        else:
+            widget = ttk.Entry(frame_form, textvariable=var, width=17)
+
+        widget.grid(row=i//4, column=(i%4)*2 + 1, padx=5, pady=5)
         entry_vars[col] = var
+
+        if col == 'PassengerId':
+            widget.configure(state='readonly')
 
     # ==== Buttons ====
     frame_btn = ttk.Frame(frame)
