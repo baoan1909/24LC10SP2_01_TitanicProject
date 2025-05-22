@@ -76,7 +76,7 @@ def show_chart(chart_func):
     chart_frame_container.pack(fill=BOTH, expand=True)
     chart_func(chart_frame_container)
 
-ttk.Button(chart_frame, text="Sống sót", command=lambda: show_chart(visualize.show_survival_chart)).pack(fill=X, pady=2)
+ttk.Button(chart_frame, text="Sống sót", command=lambda: show_chart(visualize.show_survival_chart(df))).pack(fill=X, pady=2)
 ttk.Button(chart_frame, text="Giới tính", command=lambda: show_chart(visualize.show_gender_chart)).pack(fill=X, pady=2)
 ttk.Button(chart_frame, text="Tuổi", command=lambda: show_chart(visualize.show_age_chart)).pack(fill=X, pady=2)
 
