@@ -22,7 +22,7 @@ def show_survival_chart(df):
                 ax_i = ax[r,c]
                 sns.countplot(data=df, x=cols[i], hue='Survived', palette='Blues', ax=ax_i)
                 ax_i.set_title(f"Figure {i+1}: Survived Rate vs {cols[i]}")
-                ax_i.legend(title='',loc='upper right', labels=['Not Survived','Survived'])
+                ax_i.legend(title='',loc='upper left', labels=['Not Survived','Survived'])
     ax.flat[-1].set_visible(False) #remove last subplot
     plt.tight_layout()
     plt.show()
@@ -31,6 +31,9 @@ def show_gender_chart():
     # vẽ biểu đồ pie giới tính
     pass
 
-def show_age_chart():
+def show_age_chart(df):
     # vẽ histogram độ tuổi
-    pass
+    hist= sns.histplot(data=df, x='Age', hue='Survived', bins=40, palette='Blues')
+    hist.set_title("Histogram Age with Survived")
+    plt.show()
+   

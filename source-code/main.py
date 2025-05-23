@@ -78,7 +78,7 @@ def show_chart(chart_func):
 
 ttk.Button(chart_frame, text="Sống sót", command=lambda: show_chart(visualize.show_survival_chart(df))).pack(fill=X, pady=2)
 ttk.Button(chart_frame, text="Giới tính", command=lambda: show_chart(visualize.show_gender_chart)).pack(fill=X, pady=2)
-ttk.Button(chart_frame, text="Tuổi", command=lambda: show_chart(visualize.show_age_chart)).pack(fill=X, pady=2)
+ttk.Button(chart_frame, text="Tuổi", command=lambda: show_chart(visualize.show_age_chart(df))).pack(fill=X, pady=2)
 
 # --- Các nút khác ---
 ttk.Button(frame_sidebar, text="💾 Xuất CSV", bootstyle="success").pack(pady=5, fill=X)
