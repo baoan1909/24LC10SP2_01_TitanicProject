@@ -76,9 +76,10 @@ def show_chart(chart_func):
     chart_frame_container.pack(fill=BOTH, expand=True)
     chart_func(chart_frame_container)
 
-ttk.Button(chart_frame, text="Sống sót", command=lambda: show_chart(visualize.show_survival_chart(df))).pack(fill=X, pady=2)
-ttk.Button(chart_frame, text="Giới tính", command=lambda: show_chart(visualize.show_gender_chart)).pack(fill=X, pady=2)
-ttk.Button(chart_frame, text="Tuổi", command=lambda: show_chart(visualize.show_age_chart(df))).pack(fill=X, pady=2)
+ttk.Button(chart_frame, text="Phân bố tuổi với hạng vé (boxplot)", command=lambda: show_chart(visualize.boxplot_show_age_pclass_chart(df))).pack(fill=X, pady=2)
+ttk.Button(chart_frame, text="Tỉ lệ sống - không sống (pie)", command=lambda: show_chart(visualize.pie_show_survived_rate_chart(df))).pack(fill=X, pady=2)
+ttk.Button(chart_frame, text="Sống sót qua các đặc trưng (subplot)", command=lambda: show_chart(visualize.subplot_show_survival_chart(df))).pack(fill=X, pady=2)
+ttk.Button(chart_frame, text="Tỉ lệ sống qua đặc trưng tuổi (hist)", command=lambda: show_chart(visualize.hist_show_age_chart(df))).pack(fill=X, pady=2)
 
 # --- Các nút khác ---
 ttk.Button(frame_sidebar, text="💾 Xuất CSV", bootstyle="success").pack(pady=5, fill=X)
