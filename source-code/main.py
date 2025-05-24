@@ -23,7 +23,7 @@ app.title("Quản lý dữ liệu Titanic")
 app.geometry("1700x780")
 
 # Khung sidebar bên trái
-frame_sidebar = ttk.Frame(app, padding=10, width=220)
+frame_sidebar = ttk.Frame(app, padding=10, width=250)
 frame_sidebar.pack(side=LEFT, fill=Y)
 frame_sidebar.pack_propagate(False)
 
@@ -78,8 +78,9 @@ def show_chart(chart_func):
 
 ttk.Button(chart_frame, text="Phân bố tuổi với hạng vé (boxplot)", command=lambda: show_chart(visualize.boxplot_show_age_pclass_chart(df))).pack(fill=X, pady=2)
 ttk.Button(chart_frame, text="Tỉ lệ sống - không sống (pie)", command=lambda: show_chart(visualize.pie_show_survived_rate_chart(df))).pack(fill=X, pady=2)
-ttk.Button(chart_frame, text="Sống sót qua các đặc trưng (subplot)", command=lambda: show_chart(visualize.subplot_show_survival_chart(df))).pack(fill=X, pady=2)
-ttk.Button(chart_frame, text="Tỉ lệ sống qua đặc trưng tuổi (hist)", command=lambda: show_chart(visualize.hist_show_age_chart(df))).pack(fill=X, pady=2)
+ttk.Button(chart_frame, text="Sống sót theo các đặc trưng (subplot)", command=lambda: show_chart(visualize.subplot_show_survival_chart(df))).pack(fill=X, pady=2)
+ttk.Button(chart_frame, text="Tỉ lệ sống theo đặc trưng tuổi (hist)", command=lambda: show_chart(visualize.hist_show_age_chart(df))).pack(fill=X, pady=2)
+ttk.Button(chart_frame, text="Tỉ lệ sống theo danh xưng (countplot)", command=lambda: show_chart(visualize.count_plot_show_title_chart(df))).pack(fill=X, pady=2)
 
 # --- Các nút khác ---
 ttk.Button(frame_sidebar, text="💾 Xuất CSV", bootstyle="success").pack(pady=5, fill=X)

@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import re
 
 
 def boxplot_show_age_pclass_chart(df):
@@ -32,6 +33,7 @@ def pie_show_survived_rate_chart(df):
     )
     plt.title('Survival Rate on the Titanic', color= 'red')
     ax.set_ylabel('')
+    ax.set_xlabel('')
     texts = ax.texts
     texts[0].set_color('blue')  
     texts[1].set_color('white')
@@ -63,5 +65,27 @@ def subplot_show_survival_chart(df):
                 ax_i.set_ylabel('count', color='blue')
                 ax_i.legend(title='',loc='upper left', labels=['Not Survived','Survived'])
     ax.flat[-1].set_visible(False) 
+    plt.tight_layout()
+    plt.show()
+
+def count_plot_show_title_chart(df):
+    
+    def extract_title(name):
+        p = re.compile(r",([\w\s]+)\.")
+        return p.search(name).groups(1)[0].strip()
+
+    def group_title(title):
+        if title in ['Mr', 'Mrs', 'Miss', 'Master']:
+            return title
+        elif  title == "Ms":
+            return "Miss"
+        else: return "Others"
+    
+    df['Title'] = df['Name'].apply(lambda name: extract_title(name))
+    df['Title'] = df['Title'].apply(lambda title: group_title(title))
+    ax = sns.countplot(data = df, x='Title', hue = 'Survived')
+    ax.set_title('Survived rate by title', color='red')
+    ax.set_xlabel('Title', color='blue')
+    ax.set_ylabel('Count', color='blue')
     plt.tight_layout()
     plt.show()
