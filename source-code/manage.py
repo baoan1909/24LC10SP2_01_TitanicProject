@@ -116,3 +116,9 @@ def manage_frame(app, df):
     table.bind('<<TreeviewSelect>>', lambda event: crud.on_row_select(event, table, cols, entry_vars))
 
     return frame, table, entry_vars
+
+def update_dataframe_in_manage(frame_manage, table, new_df):
+    """
+    Update the dataframe in manage frame after cleaning
+    """
+    crud.update_table(table, new_df)

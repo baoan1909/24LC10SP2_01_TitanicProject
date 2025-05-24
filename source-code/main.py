@@ -3,18 +3,46 @@ from ttkbootstrap.constants import *
 import pandas as pd
 from modules import crud
 from modules import visualize
+from modules import clean
 from manage import manage_frame
+from tkinter import messagebox
+import os
 
-# === Load dữ liệu gốc ===
-train_df = pd.read_csv('dataset/titanic/train.csv')
-test_df = pd.read_csv('dataset/titanic/test.csv')
-gender_submission_df = pd.read_csv('dataset/titanic/gender_submission.csv')
+# === Load dữ liệu ===
+# Check if cleaned.csv exists and ask user preference
+cleaned_file_exists = os.path.exists('dataset/titanic/cleaned.csv')
 
-# Nối theo PassengerId để thêm cột Survived
-merged_df = test_df.merge(gender_submission_df, on="PassengerId", how="left")
-merged_df.to_csv("dataset/titanic/test_with_survived.csv", index=False)
-
-df = pd.concat([train_df, merged_df], ignore_index=True)
+if cleaned_file_exists:
+    # Ask user if they want to use cleaned data or original data
+    use_cleaned = messagebox.askyesno(
+        "Chọn dữ liệu", 
+        "Phát hiện file cleaned.csv đã tồn tại.\n\nBạn có muốn sử dụng dữ liệu đã được clean không?\n\nChọn 'No' để load lại từ 3 file gốc."
+    )
+    
+    if use_cleaned:
+        df = clean.load_cleaned_data()
+        print("Đã load dữ liệu từ cleaned.csv")
+    else:
+        print("Loading từ 3 file gốc...")
+        train_df = pd.read_csv('dataset/titanic/train.csv')
+        test_df = pd.read_csv('dataset/titanic/test.csv')
+        gender_submission_df = pd.read_csv('dataset/titanic/gender_submission.csv')
+        
+        # Nối theo PassengerId để thêm cột Survived
+        merged_df = test_df.merge(gender_submission_df, on="PassengerId", how="left")
+        df = pd.concat([train_df, merged_df], ignore_index=True)
+        print("Đã load và merge 3 file gốc")
+else:
+    # No cleaned file exists, load original files
+    print("Không tìm thấy cleaned.csv. Loading từ 3 file gốc...")
+    train_df = pd.read_csv('dataset/titanic/train.csv')
+    test_df = pd.read_csv('dataset/titanic/test.csv')
+    gender_submission_df = pd.read_csv('dataset/titanic/gender_submission.csv')
+    
+    # Nối theo PassengerId để thêm cột Survived
+    merged_df = test_df.merge(gender_submission_df, on="PassengerId", how="left")
+    df = pd.concat([train_df, merged_df], ignore_index=True)
+    print("Đã load và merge 3 file gốc")
 
 # === Giao diện chính ===
 app = ttk.Window(themename="cosmo")
@@ -42,6 +70,18 @@ def hide_all_frames():
     for child in frame_main_content.winfo_children():
         child.pack_forget()
 
+# Hàm reload dữ liệu sau khi clean
+def reload_data():
+    global df, frame_manage_passenger, table, entry_vars
+    new_df = clean.load_cleaned_data()
+    if new_df is not None:
+        df = new_df
+        # Tạo lại frame quản lý với dữ liệu mới
+        hide_all_frames()
+        frame_manage_passenger, table, entry_vars = manage_frame(frame_main_content, df)
+        frame_manage_passenger.pack(fill=BOTH, expand=True)
+        crud.update_table(table, df)
+
 # --- Nút Quản lý hành khách ---
 def show_manage_passenger():
     hide_all_frames()
@@ -54,6 +94,23 @@ ttk.Button(
     text="👤 Quản lý hành khách",
     command=show_manage_passenger,
     bootstyle="primary"
+).pack(pady=5, fill=X)
+
+# --- Nút Clean dữ liệu ---
+def clean_data():
+    try:
+        messagebox.showinfo("Đang xử lý", "Đang thực hiện cleaning dữ liệu...")
+        clean.merge_and_clean_data()
+        messagebox.showinfo("Thành công", "Đã clean dữ liệu và lưu vào cleaned.csv!\nDữ liệu đã được tự động reload.")
+        reload_data()
+    except Exception as e:
+        messagebox.showerror("Lỗi", f"Không thể clean dữ liệu:\n{str(e)}")
+
+ttk.Button(
+    frame_sidebar,
+    text="🧹 Clean dữ liệu",
+    command=clean_data,
+    bootstyle="warning"
 ).pack(pady=5, fill=X)
 
 # --- Nút Biểu đồ ---
@@ -81,7 +138,14 @@ ttk.Button(chart_frame, text="Tỉ lệ sống theo đặc trưng tuổi (hist)"
 ttk.Button(chart_frame, text="Tỉ lệ sống theo danh xưng (countplot)", command=lambda: show_chart(visualize.count_plot_show_title_chart(df))).pack(fill=X, pady=2)
 
 # --- Các nút khác ---
-ttk.Button(frame_sidebar, text="💾 Xuất CSV", bootstyle="success").pack(pady=5, fill=X)
+def export_csv():
+    try:
+        df.to_csv('dataset/titanic/exported_data.csv', index=False)
+        messagebox.showinfo("Thành công", "Đã xuất dữ liệu ra exported_data.csv!")
+    except Exception as e:
+        messagebox.showerror("Lỗi", f"Không thể xuất CSV:\n{str(e)}")
+
+ttk.Button(frame_sidebar, text="💾 Xuất CSV", command=export_csv, bootstyle="success").pack(pady=5, fill=X)
 
 # === Hiển thị giao diện ===
 app.mainloop()
