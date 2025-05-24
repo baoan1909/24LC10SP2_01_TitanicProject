@@ -5,7 +5,6 @@ def clear_form(entry_vars):
         var.set("")
 
 def update_table(tree, df, page=0, rows_per_page=50):
-    """Hiển thị dữ liệu theo trang."""
     tree.delete(*tree.get_children())
     start = page * rows_per_page
     end = start + rows_per_page
@@ -14,7 +13,6 @@ def update_table(tree, df, page=0, rows_per_page=50):
         tree.insert('', 'end', values=list(row))
 
 def update_page_info(current_page_var, page_info_var, df, rows_per_page):
-    """Cập nhật chuỗi Trang x / y"""
     total_pages = (len(df) - 1) // rows_per_page + 1
     current = current_page_var.get() + 1
     page_info_var.set(f"Trang {current} / {total_pages}")
@@ -33,7 +31,6 @@ def next_page(df, current_page_var, rows_per_page, table, page_info_var):
         update_page_info(current_page_var, page_info_var, df, rows_per_page)
 
 def filter_data(df, sex_value, pclass_value):
-    """Trả về DataFrame đã lọc"""
     filtered = df.copy()
     if sex_value != "Tất cả":
         filtered = filtered[filtered['Sex'] == sex_value]
@@ -43,14 +40,11 @@ def filter_data(df, sex_value, pclass_value):
 
 def add_row(df, cols, entry_vars, tree):
     try:
-        # Lấy dữ liệu từ form, bỏ qua PassengerId
         new_data = {col: entry_vars[col].get() for col in cols if col != 'PassengerId'}
 
-        # Tự động sinh PassengerId mới
         new_id = int(df['PassengerId'].max()) + 1 if not df.empty else 1
         new_data['PassengerId'] = new_id
 
-        # Chuyển kiểu dữ liệu phù hợp
         new_data['Survived'] = int(new_data['Survived'])
         new_data['Pclass'] = int(new_data['Pclass'])
         new_data['Age'] = float(new_data['Age'])
@@ -72,7 +66,9 @@ def edit_row(df, cols, entry_vars, tree):
         messagebox.showwarning("Chưa chọn dòng", "Vui lòng chọn dòng cần sửa.")
         return
     try:
-        idx = tree.index(selected[0])
+        passenger_id = int(tree.item(selected[0])['values'][0])
+        idx = df[df['PassengerId'] == passenger_id].index[0]
+
         for col in cols:
             val = entry_vars[col].get()
             if col in ['PassengerId', 'Pclass', 'SibSp', 'Parch', 'Survived']:
@@ -81,8 +77,10 @@ def edit_row(df, cols, entry_vars, tree):
                 df.at[idx, col] = float(val)
             else:
                 df.at[idx, col] = val
+
         update_table(tree, df)
         clear_form(entry_vars)
+        messagebox.showinfo("Thành công", "Cập nhật thành công!")
     except Exception as e:
         messagebox.showerror("Lỗi", f"Không thể cập nhật:\n{str(e)}")
 
@@ -91,11 +89,20 @@ def delete_row(df, tree, entry_vars):
     if not selected:
         messagebox.showwarning("Chưa chọn dòng", "Vui lòng chọn dòng cần xoá.")
         return
-    idx = tree.index(selected[0])
-    df.drop(df.index[idx], inplace=True)
-    df.reset_index(drop=True, inplace=True)
-    update_table(tree, df)
-    clear_form(entry_vars)
+    try:
+        passenger_id = int(tree.item(selected[0])['values'][0])
+
+        idx = df[df['PassengerId'] == passenger_id].index[0]
+
+        df.drop(idx, inplace=True)
+        df.reset_index(drop=True, inplace=True)
+
+        update_table(tree, df)
+        clear_form(entry_vars)
+        messagebox.showinfo("Thành công", "Đã xoá hành khách.")
+    except Exception as e:
+        messagebox.showerror("Lỗi", f"Không thể xoá:\n{str(e)}")
+
 
 def on_row_select(event, tree, cols, entry_vars):
     selected = tree.selection()

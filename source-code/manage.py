@@ -86,13 +86,31 @@ def manage_frame(app, df):
         if col == 'PassengerId':
             widget.configure(state='readonly')
 
+    def refresh_filtered():
+        nonlocal filtered_df
+        filtered_df = df.copy()
+        current_page_var.set(0)
+        crud.update_page_info(current_page_var, page_info_var, filtered_df, rows_per_page)
+
     # ==== Buttons ====
     frame_btn = ttk.Frame(frame)
     frame_btn.pack(pady=10)
 
-    ttk.Button(frame_btn, text="➕ Thêm", command=lambda: crud.add_row(df, cols, entry_vars, table), bootstyle="success").pack(side=LEFT, padx=10)
-    ttk.Button(frame_btn, text="✏️ Cập nhật", command=lambda: crud.edit_row(df, cols, entry_vars, table), bootstyle="warning").pack(side=LEFT, padx=10)
-    ttk.Button(frame_btn, text="❌ Xoá", command=lambda: crud.delete_row(df, table, entry_vars), bootstyle="danger").pack(side=LEFT, padx=10)
+    ttk.Button(frame_btn, text="➕ Thêm",
+        command=lambda: [crud.add_row(df, cols, entry_vars, table),
+                        refresh_filtered()],
+        bootstyle="success").pack(side=LEFT, padx=10)
+
+    ttk.Button(frame_btn, text="✏️ Cập nhật",
+        command=lambda: [crud.edit_row(df, cols, entry_vars, table),
+                        refresh_filtered()],
+        bootstyle="warning").pack(side=LEFT, padx=10)
+
+    ttk.Button(frame_btn, text="❌ Xoá",
+        command=lambda: [crud.delete_row(df, table, entry_vars),
+                        refresh_filtered()],
+        bootstyle="danger").pack(side=LEFT, padx=10)
+
     ttk.Button(frame_btn, text="🧹 Xoá form", command=lambda: crud.clear_form(entry_vars), bootstyle="secondary").pack(side=LEFT, padx=10)
 
     table.bind('<<TreeviewSelect>>', lambda event: crud.on_row_select(event, table, cols, entry_vars))

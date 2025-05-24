@@ -15,7 +15,6 @@ merged_df = test_df.merge(gender_submission_df, on="PassengerId", how="left")
 merged_df.to_csv("dataset/titanic/test_with_survived.csv", index=False)
 
 df = pd.concat([train_df, merged_df], ignore_index=True)
-filtered_df = df.copy()
 
 # === Giao diện chính ===
 app = ttk.Window(themename="cosmo")
@@ -70,11 +69,10 @@ btn_chart.pack(pady=5, fill=X)
 # --- Khung các lựa chọn biểu đồ ---
 chart_frame = ttk.Frame(frame_sidebar)
 
-def show_chart(chart_func):
+def show_chart():
     hide_all_frames()
     chart_frame_container = ttk.Frame(frame_main_content)
-    chart_frame_container.pack(fill=BOTH, expand=True)
-    chart_func(chart_frame_container)
+    chart_frame_container.place(relwidth=1, relheight=1)
 
 ttk.Button(chart_frame, text="Phân bố tuổi với hạng vé (boxplot)", command=lambda: show_chart(visualize.boxplot_show_age_pclass_chart(df))).pack(fill=X, pady=2)
 ttk.Button(chart_frame, text="Tỉ lệ sống - không sống (pie)", command=lambda: show_chart(visualize.pie_show_survived_rate_chart(df))).pack(fill=X, pady=2)
