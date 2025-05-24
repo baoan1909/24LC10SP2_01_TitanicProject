@@ -5,21 +5,32 @@ import matplotlib.pyplot as plt
 
 # === Xử lý dữ liệu ===
 
-def merge_and_clean_data():
+def merge_and_clean_data(current_df=None):
     """
-    Merge train, test, and gender_submission data, then clean the merged dataset
+    Clean the dataset. Can work with current dataframe (including user changes) 
+    or merge from original files.
+    
+    Args:
+        current_df: If provided, clean this dataframe. If None, load and merge from original files.
+    
     Returns the cleaned dataframe and saves it to 'dataset/titanic/cleaned.csv'
     """
-    # Load the original 3 files
-    train_df = pd.read_csv('dataset/titanic/train.csv')
-    test_df = pd.read_csv('dataset/titanic/test.csv')
-    gender_submission_df = pd.read_csv('dataset/titanic/gender_submission.csv')
     
-    # Merge test with gender_submission to add Survived column
-    merged_test_df = test_df.merge(gender_submission_df, on="PassengerId", how="left")
-    
-    # Combine train and test data
-    df = pd.concat([train_df, merged_test_df], ignore_index=True)
+    if current_df is not None:
+        print("=== CLEANING CURRENT DATA (including user changes) ===")
+        df = current_df.copy()
+    else:
+        print("=== LOADING AND MERGING FROM ORIGINAL FILES ===")
+        # Load the original 3 files
+        train_df = pd.read_csv('dataset/titanic/train.csv')
+        test_df = pd.read_csv('dataset/titanic/test.csv')
+        gender_submission_df = pd.read_csv('dataset/titanic/gender_submission.csv')
+        
+        # Merge test with gender_submission to add Survived column
+        merged_test_df = test_df.merge(gender_submission_df, on="PassengerId", how="left")
+        
+        # Combine train and test data
+        df = pd.concat([train_df, merged_test_df], ignore_index=True)
     
     # Remove duplicates
     df = df.drop_duplicates()

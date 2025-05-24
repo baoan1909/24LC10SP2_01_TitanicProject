@@ -96,12 +96,33 @@ ttk.Button(
     bootstyle="primary"
 ).pack(pady=5, fill=X)
 
-# --- Nút Clean dữ liệu ---
-def clean_data():
+# --- Nút Clean dữ liệu với tùy chọn ---
+def clean_data_options():
+    choice = messagebox.askyesnocancel(
+        "Tùy chọn Clean", 
+        "Chọn cách thức clean dữ liệu:\n\n" +
+        "• YES: Clean dữ liệu hiện tại (bao gồm thay đổi của bạn)\n" +
+        "• NO: Clean từ 3 file gốc (bỏ qua thay đổi)\n" +
+        "• Cancel: Hủy bỏ"
+    )
+    
+    if choice is None:  # Cancel
+        return
+    
     try:
         messagebox.showinfo("Đang xử lý", "Đang thực hiện cleaning dữ liệu...")
-        clean.merge_and_clean_data()
-        messagebox.showinfo("Thành công", "Đã clean dữ liệu và lưu vào cleaned.csv!\nDữ liệu đã được tự động reload.")
+        
+        if choice:  # YES - Clean current data
+            clean.merge_and_clean_data(current_df=df)
+            messagebox.showinfo("Thành công", 
+                "Đã clean dữ liệu hiện tại (bao gồm thay đổi) và lưu vào cleaned.csv!\n" +
+                "Dữ liệu đã được tự động reload.")
+        else:  # NO - Clean from original files
+            clean.merge_and_clean_data(current_df=None)
+            messagebox.showinfo("Thành công", 
+                "Đã clean từ 3 file gốc và lưu vào cleaned.csv!\n" +
+                "Dữ liệu đã được tự động reload.")
+        
         reload_data()
     except Exception as e:
         messagebox.showerror("Lỗi", f"Không thể clean dữ liệu:\n{str(e)}")
@@ -109,7 +130,7 @@ def clean_data():
 ttk.Button(
     frame_sidebar,
     text="🧹 Clean dữ liệu",
-    command=clean_data,
+    command=clean_data_options,
     bootstyle="warning"
 ).pack(pady=5, fill=X)
 
@@ -137,7 +158,7 @@ ttk.Button(chart_frame, text="Sống sót theo các đặc trưng (subplot)", co
 ttk.Button(chart_frame, text="Tỉ lệ sống theo đặc trưng tuổi (hist)", command=lambda: show_chart(visualize.hist_show_age_chart(df))).pack(fill=X, pady=2)
 ttk.Button(chart_frame, text="Tỉ lệ sống theo danh xưng (countplot)", command=lambda: show_chart(visualize.count_plot_show_title_chart(df))).pack(fill=X, pady=2)
 
-# --- Các nút khác ---
+# --- Nút Xuất CSV ---
 def export_csv():
     try:
         df.to_csv('dataset/titanic/exported_data.csv', index=False)
@@ -145,7 +166,7 @@ def export_csv():
     except Exception as e:
         messagebox.showerror("Lỗi", f"Không thể xuất CSV:\n{str(e)}")
 
-ttk.Button(frame_sidebar, text="💾 Xuất CSV", command=export_csv, bootstyle="success").pack(pady=5, fill=X)
+ttk.Button(frame_sidebar, text="📤 Xuất CSV", command=export_csv, bootstyle="success").pack(pady=5, fill=X)
 
 # === Hiển thị giao diện ===
 app.mainloop()

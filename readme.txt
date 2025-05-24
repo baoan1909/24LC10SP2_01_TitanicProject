@@ -21,7 +21,7 @@ Năm học: HKx/2024-20xx
 
 3. Các chức năng chính:
    - Quản lý hành khách: Xem, thêm, sửa, xóa thông tin hành khách
-   - Clean dữ liệu: Hợp nhất và làm sạch dữ liệu từ train.csv, test.csv, gender_submission.csv
+   - Clean dữ liệu: 2 tùy chọn cleaning với dialog lựa chọn
    - Biểu đồ: Hiển thị các biểu đồ phân tích dữ liệu
    - Xuất CSV: Xuất dữ liệu hiện tại ra file CSV
 
@@ -29,8 +29,18 @@ Năm học: HKx/2024-20xx
    - cleaned.csv: File dữ liệu đã được làm sạch
    - Nếu chưa có cleaned.csv, ứng dụng sẽ tự động load từ 3 file gốc
 
-5. Chức năng Clean dữ liệu:
-   - Hợp nhất train.csv, test.csv và gender_submission.csv
-   - Xử lý missing values cho Age, Fare, Cabin, Embarked
-   - Loại bỏ duplicate records
-   - Xuất kết quả ra cleaned.csv và tự động reload trong ứng dụng
+5. Chức năng Clean dữ liệu (có 2 tùy chọn):
+   - **Tùy chọn YES**: Clean dữ liệu hiện tại (bao gồm thay đổi của bạn)
+     → Các dòng thêm/sửa/xóa sẽ được giữ lại trong cleaned.csv
+   - **Tùy chọn NO**: Clean từ 3 file gốc (bỏ qua thay đổi)
+     → Reset về dữ liệu gốc và thực hiện cleaning
+
+6. Luồng làm việc:
+   a) Thêm/sửa/xóa dữ liệu trong giao diện
+   b) Nhấn "🧹 Clean dữ liệu" → chọn "YES" để giữ thay đổi
+   c) Hoặc chọn "NO" nếu muốn reset về dữ liệu gốc
+
+7. Lưu ý quan trọng:
+   - Thay đổi trong giao diện chỉ lưu trong memory
+   - Phải nhấn "Clean với YES" để lưu thay đổi vào cleaned.csv
+   - "Clean với NO" sẽ MẤT HẾT thay đổi và reset về gốc
