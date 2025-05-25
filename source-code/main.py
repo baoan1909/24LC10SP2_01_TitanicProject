@@ -8,6 +8,11 @@ from manage import manage_frame
 from tkinter import messagebox
 import os
 
+# === Giao diện chính ===
+app = ttk.Window(themename="cosmo")
+app.title("Quản lý dữ liệu Titanic")
+app.geometry("1700x780")
+
 # === Load dữ liệu ===
 # Check if cleaned.csv exists and ask user preference
 cleaned_file_exists = os.path.exists('dataset/titanic/cleaned.csv')
@@ -43,11 +48,6 @@ else:
     merged_df = test_df.merge(gender_submission_df, on="PassengerId", how="left")
     df = pd.concat([train_df, merged_df], ignore_index=True)
     print("Đã load và merge 3 file gốc")
-
-# === Giao diện chính ===
-app = ttk.Window(themename="cosmo")
-app.title("Quản lý dữ liệu Titanic")
-app.geometry("1700x780")
 
 # Khung sidebar bên trái
 frame_sidebar = ttk.Frame(app, padding=10, width=250)
