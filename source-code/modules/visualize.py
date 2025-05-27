@@ -12,6 +12,7 @@ def boxplot_show_age_pclass_chart(df):
     plt.ylabel("Age",color='blue')
     plt.show()
 
+
 def hist_show_age_chart(df):
     # vẽ histogram độ tuổi
     hist= sns.histplot(data=df, x='Age', hue='Survived', bins=40)
@@ -68,6 +69,54 @@ def subplot_show_survival_chart(df):
     plt.tight_layout()
     plt.show()
 
+def count_plot_show_survived_by_family_size(df):
+    df['Family_Size'] = df['SibSp'].astype('int') + df['Parch'].astype('int') + 1
+    df['Family_Cat'] = pd.cut(df['Family_Size'], bins=[0, 1, 4, 6, 15], labels=['Solo', 'Small', 'Medium', 'Large'])
+
+    cols = ['Family_Size', 'Family_Cat']
+    n_rows = 1
+    n_cols = 2
+
+    fig, ax = plt.subplots(n_rows, n_cols, figsize=(n_cols*4, n_rows*4))
+    for i in range(len(cols)):
+        sns.countplot(data=df, x=cols[i], hue='Survived', palette='Blues', ax=ax[i])
+        ax[i].set_title(f"Figure {i+1}: Survived Rate vs {cols[i]}", color='red')
+        ax[i].set_xlabel(cols[i], color='blue')
+        ax[i].set_ylabel('Count', color='blue')
+        ax[i].legend(title='', loc='upper right', labels=['Not Survived', 'Survived'])
+
+    plt.tight_layout()
+    plt.show()
+def countplot_show_sex_with_pclass(df):
+    plt.figure(figsize=(10,6))
+    sns.boxplot(x="Pclass", y="Age", hue="Sex", data=df)
+    plt.title("Phân bố tuổi theo giới tính và hạng vé")
+    plt.xlabel("Hạng vé (Pclass)")
+    plt.ylabel("Tuổi")
+    plt.legend(title="Giới tính")
+    plt.show()
+
+
+def boxplot_show_sex_with_embarked(df):
+    plt.figure(figsize=(12,6))
+    sns.countplot(data=df, x="Embarked", hue="Sex", palette="Set2", dodge=True)
+    plt.title("Số lượng hành khách theo Giới tính và Cảng lên tàu")
+    plt.xlabel("Cảng lên tàu (Embarked)")
+    plt.ylabel("Số lượng")
+    plt.legend(title="Giới tính")
+    plt.show()
+
+def countplot_full(df):
+    sns.catplot(
+        data=df, kind="count",
+        x="Embarked", hue="Sex",
+        col="Pclass", palette="Set2",
+        height=4, aspect=1
+    )
+    plt.subplots_adjust(top=0.85)
+    plt.suptitle("Số lượng hành khách theo Cảng, Giới tính và Hạng vé")
+    plt.show()
+    
 def count_plot_show_title_chart(df):
     
     def extract_title(name):

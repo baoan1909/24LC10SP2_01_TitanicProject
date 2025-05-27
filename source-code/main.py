@@ -152,9 +152,11 @@ def show_chart():
     chart_frame_container = ttk.Frame(frame_main_content)
     chart_frame_container.place(relwidth=1, relheight=1)
 
-ttk.Button(chart_frame, text="Phân bố tuổi với hạng vé (boxplot)", command=lambda: show_chart(visualize.boxplot_show_age_pclass_chart(df))).pack(fill=X, pady=2)
+ttk.Button(chart_frame, text="Giới tính - hạng vé - cảng biển (countplot)", command=lambda: show_chart(visualize.countplot_full(df))).pack(fill=X, pady=2)
+ttk.Button(chart_frame, text="Phân bố giới tính với hạng vé (boxplot)", command=lambda: show_chart(visualize.countplot_show_sex_with_pclass(df))).pack(fill=X, pady=2)
 ttk.Button(chart_frame, text="Tỉ lệ sống - không sống (pie)", command=lambda: show_chart(visualize.pie_show_survived_rate_chart(df))).pack(fill=X, pady=2)
 ttk.Button(chart_frame, text="Sống sót theo các đặc trưng (subplot)", command=lambda: show_chart(visualize.subplot_show_survival_chart(df))).pack(fill=X, pady=2)
+ttk.Button(chart_frame, text="Sống sót theo đặc trưng gia đình (countplot)", command=lambda: show_chart(visualize.count_plot_show_survived_by_family_size(df))).pack(fill=X, pady=2)
 ttk.Button(chart_frame, text="Tỉ lệ sống theo đặc trưng tuổi (hist)", command=lambda: show_chart(visualize.hist_show_age_chart(df))).pack(fill=X, pady=2)
 ttk.Button(chart_frame, text="Tỉ lệ sống theo danh xưng (countplot)", command=lambda: show_chart(visualize.count_plot_show_title_chart(df))).pack(fill=X, pady=2)
 
