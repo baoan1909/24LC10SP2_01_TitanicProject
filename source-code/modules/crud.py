@@ -30,12 +30,19 @@ def next_page(df, current_page_var, rows_per_page, table, page_info_var):
         update_table(table, df, current_page_var.get(), rows_per_page)
         update_page_info(current_page_var, page_info_var, df, rows_per_page)
 
-def filter_data(df, sex_value, pclass_value):
+def filter_data(df, sex_value, pclass_value, keyword):
     filtered = df.copy()
     if sex_value != "Tất cả":
         filtered = filtered[filtered['Sex'] == sex_value]
     if pclass_value != "Tất cả":
         filtered = filtered[filtered['Pclass'] == int(pclass_value)]
+    if keyword == "":
+        filtered = filtered
+    else:
+        if keyword.isdigit():
+            filtered = filtered[filtered["PassengerId"] == int(keyword)]
+        else:
+            filtered = filtered[filtered["Name"].str.lower().str.contains(keyword, na=False)]
     return filtered
 
 def add_row(df, cols, entry_vars, tree):
@@ -110,3 +117,6 @@ def on_row_select(event, tree, cols, entry_vars):
         values = tree.item(selected[0])['values']
         for col, val in zip(cols, values):
             entry_vars[col].set(val)
+
+
+

@@ -50,7 +50,7 @@ else:
     print("Đã load và merge 3 file gốc")
 
 # Khung sidebar bên trái
-frame_sidebar = ttk.Frame(app, padding=10, width=250)
+frame_sidebar = ttk.Frame(app, padding=10, width=300)
 frame_sidebar.pack(side=LEFT, fill=Y)
 frame_sidebar.pack_propagate(False)
 
@@ -152,13 +152,13 @@ def show_chart():
     chart_frame_container = ttk.Frame(frame_main_content)
     chart_frame_container.place(relwidth=1, relheight=1)
 
-ttk.Button(chart_frame, text="Giới tính - hạng vé - cảng biển (countplot)", command=lambda: show_chart(visualize.countplot_full(df))).pack(fill=X, pady=2)
-ttk.Button(chart_frame, text="Phân bố giới tính với hạng vé (boxplot)", command=lambda: show_chart(visualize.countplot_show_sex_with_pclass(df))).pack(fill=X, pady=2)
-ttk.Button(chart_frame, text="Tỉ lệ sống - không sống (pie)", command=lambda: show_chart(visualize.pie_show_survived_rate_chart(df))).pack(fill=X, pady=2)
+
+ttk.Button(chart_frame, text="Tỉ lệ sống - gặp nạn (pie)", command=lambda: show_chart(visualize.pie_show_survived_rate_chart(df))).pack(fill=X, pady=2)
 ttk.Button(chart_frame, text="Sống sót theo các đặc trưng (subplot)", command=lambda: show_chart(visualize.subplot_show_survival_chart(df))).pack(fill=X, pady=2)
 ttk.Button(chart_frame, text="Sống sót theo đặc trưng gia đình (countplot)", command=lambda: show_chart(visualize.count_plot_show_survived_by_family_size(df))).pack(fill=X, pady=2)
 ttk.Button(chart_frame, text="Tỉ lệ sống theo đặc trưng tuổi (hist)", command=lambda: show_chart(visualize.hist_show_age_chart(df))).pack(fill=X, pady=2)
-ttk.Button(chart_frame, text="Tỉ lệ sống theo danh xưng (countplot)", command=lambda: show_chart(visualize.count_plot_show_title_chart(df))).pack(fill=X, pady=2)
+ttk.Button(chart_frame, text="Giới tính - hạng vé - cảng biển (countplot)", command=lambda: show_chart(visualize.countplot_full(df))).pack(fill=X, pady=2)
+ttk.Button(chart_frame, text="Giới tính - độ tuổi - hạng vé (boxplot)", command=lambda: show_chart(visualize.countplot_show_sex_with_pclass(df))).pack(fill=X, pady=2)
 
 # --- Nút Xuất CSV ---
 def export_csv():
@@ -169,6 +169,12 @@ def export_csv():
         messagebox.showerror("Lỗi", f"Không thể xuất CSV:\n{str(e)}")
 
 ttk.Button(frame_sidebar, text="📤 Xuất CSV", command=export_csv, bootstyle="success").pack(pady=5, fill=X)
+
+# === Tìm kiếm ===
+frame_search = ttk.Frame(frame_sidebar)
+frame_search.pack(pady=10, fill=X)
+
+
 
 # === Hiển thị giao diện ===
 app.mainloop()

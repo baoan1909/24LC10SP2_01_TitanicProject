@@ -18,10 +18,12 @@ def manage_frame(app, df):
 
     sex_var = ttk.StringVar(value="Tất cả")
     pclass_var = ttk.StringVar(value="Tất cả")
+    search_var = ttk.StringVar()
+    
 
     def do_filter():
         nonlocal filtered_df
-        filtered_df = crud.filter_data(df, sex_var.get(), pclass_var.get())
+        filtered_df = crud.filter_data(df, sex_var.get(), pclass_var.get(), search_var.get().strip().lower())
         current_page_var.set(0)
         crud.update_table(table, filtered_df, 0, rows_per_page)
         crud.update_page_info(current_page_var, page_info_var, filtered_df, rows_per_page)
@@ -30,6 +32,8 @@ def manage_frame(app, df):
     ttk.Combobox(frame_filter, textvariable=sex_var, values=["Tất cả", "male", "female"], width=10).pack(side=LEFT, padx=5)
     ttk.Label(frame_filter, text="Hạng vé:").pack(side=LEFT)
     ttk.Combobox(frame_filter, textvariable=pclass_var, values=["Tất cả", "1", "2", "3"], width=10).pack(side=LEFT, padx=5)
+    ttk.Label(frame_filter, text="Tìm kiếm tên hành khách:").pack(side=LEFT)
+    ttk.Entry(frame_filter, textvariable=search_var).pack(side=LEFT, padx=5)
     ttk.Button(frame_filter, text="Lọc dữ liệu", command=do_filter, bootstyle="primary").pack(side=LEFT, padx=10)
 
     # ==== Table ====
