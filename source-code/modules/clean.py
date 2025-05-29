@@ -69,7 +69,6 @@ def merge_and_clean_data(current_df=None):
     # === DATA CLEANING LOGIC ===
     if df['Age'].isnull().sum() > 0:
         age_median = df['Age'].median()
-        print(f"Filling {df['Age'].isnull().sum()} missing Age values with median: {age_median}")
         df['Age'] = df['Age'].fillna(age_median)
     
     if df['Fare'].isnull().sum() > 0:
