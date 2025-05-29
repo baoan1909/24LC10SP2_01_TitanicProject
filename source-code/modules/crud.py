@@ -44,13 +44,19 @@ def go_to_page(df, goto_page_var, current_page_var, rows_per_page, table, page_i
     except Exception as e:
         messagebox.showerror("Lỗi", f"Số trang không hợp lệ:\n{str(e)}")
 
-
-def filter_data(df, sex_value, pclass_value):
+def filter_data(df, sex_value, pclass_value, keyword):
     filtered = df.copy()
     if sex_value != "Tất cả":
         filtered = filtered[filtered['Sex'] == sex_value]
     if pclass_value != "Tất cả":
         filtered = filtered[filtered['Pclass'] == int(pclass_value)]
+    if keyword == "":
+        filtered = filtered
+    else:
+        if keyword.isdigit():
+            filtered = filtered[filtered["PassengerId"] == int(keyword)]
+        else:
+            filtered = filtered[filtered["Name"].str.lower().str.contains(keyword, na=False)]
     return filtered
 
 def add_row(df, cols, entry_vars, tree):
@@ -125,3 +131,6 @@ def on_row_select(event, tree, cols, entry_vars):
         values = tree.item(selected[0])['values']
         for col, val in zip(cols, values):
             entry_vars[col].set(val)
+
+
+

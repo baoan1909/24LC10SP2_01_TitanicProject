@@ -90,7 +90,7 @@ def count_plot_show_survived_by_family_size(df):
 def countplot_show_sex_with_pclass(df):
     plt.figure(figsize=(10,6))
     sns.boxplot(x="Pclass", y="Age", hue="Sex", data=df)
-    plt.title("Phân bố tuổi theo giới tính và hạng vé")
+    plt.title("Age distribution by Sex and Pclass")
     plt.xlabel("Hạng vé (Pclass)")
     plt.ylabel("Tuổi")
     plt.legend(title="Giới tính")
@@ -98,9 +98,9 @@ def countplot_show_sex_with_pclass(df):
 
 
 def boxplot_show_sex_with_embarked(df):
-    plt.figure(figsize=(12,6))
+    plt.figure(figsize=(9,6))
     sns.countplot(data=df, x="Embarked", hue="Sex", palette="Set2", dodge=True)
-    plt.title("Số lượng hành khách theo Giới tính và Cảng lên tàu")
+    plt.title("Number of Passengers by Sex and Embarked")
     plt.xlabel("Cảng lên tàu (Embarked)")
     plt.ylabel("Số lượng")
     plt.legend(title="Giới tính")
@@ -114,27 +114,7 @@ def countplot_full(df):
         height=4, aspect=1
     )
     plt.subplots_adjust(top=0.85)
-    plt.suptitle("Số lượng hành khách theo Cảng, Giới tính và Hạng vé")
+    plt.suptitle("Number of Passengers by Embarked, Sex and PClass")
     plt.show()
     
-def count_plot_show_title_chart(df):
-    
-    def extract_title(name):
-        p = re.compile(r",([\w\s]+)\.")
-        return p.search(name).groups(1)[0].strip()
 
-    def group_title(title):
-        if title in ['Mr', 'Mrs', 'Miss', 'Master']:
-            return title
-        elif  title == "Ms":
-            return "Miss"
-        else: return "Others"
-    
-    df['Title'] = df['Name'].apply(lambda name: extract_title(name))
-    df['Title'] = df['Title'].apply(lambda title: group_title(title))
-    ax = sns.countplot(data = df, x='Title', hue = 'Survived')
-    ax.set_title('Survived rate by title', color='red')
-    ax.set_xlabel('Title', color='blue')
-    ax.set_ylabel('Count', color='blue')
-    plt.tight_layout()
-    plt.show()
