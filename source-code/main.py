@@ -11,7 +11,7 @@ import os
 # === Giao diện chính ===
 app = ttk.Window(themename="cosmo")
 app.title("Quản lý dữ liệu Titanic")
-app.geometry("1366x768")
+app.geometry("1800x780")
 
 # === Load dữ liệu ===
 # Check if cleaned.csv exists and ask user preference
@@ -50,7 +50,7 @@ else:
     print("Đã load và merge 3 file gốc")
 
 # Khung sidebar bên trái
-frame_sidebar = ttk.Frame(app, padding=10, width=300)
+frame_sidebar = ttk.Frame(app, padding=10, width=200)
 frame_sidebar.pack(side=LEFT, fill=Y)
 frame_sidebar.pack_propagate(False)
 
@@ -129,7 +129,7 @@ def clean_data_options():
 
 ttk.Button(
     frame_sidebar,
-    text="🧹 Clean dữ liệu",
+    text="🧹 Làm sạch dữ liệu",
     command=clean_data_options,
     bootstyle="warning"
 ).pack(pady=5, fill=X)

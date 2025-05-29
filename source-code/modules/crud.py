@@ -110,6 +110,12 @@ def delete_row(df, tree, entry_vars):
     if not selected:
         messagebox.showwarning("Chưa chọn dòng", "Vui lòng chọn dòng cần xoá.")
         return
+    
+     # Hỏi xác nhận
+    confirm = messagebox.askyesno("Xác nhận xoá", "Bạn có chắc chắn muốn xoá dòng đã chọn không?")
+    if not confirm:
+        return
+
     try:
         passenger_id = int(tree.item(selected[0])['values'][0])
 
