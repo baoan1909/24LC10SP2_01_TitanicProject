@@ -11,7 +11,7 @@ import os
 # === Giao diện chính ===
 app = ttk.Window(themename="cosmo")
 app.title("Quản lý dữ liệu Titanic")
-app.geometry("1700x780")
+app.geometry("1366x768")
 
 # === Load dữ liệu ===
 # Check if cleaned.csv exists and ask user preference

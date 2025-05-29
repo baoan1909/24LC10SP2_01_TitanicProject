@@ -26,6 +26,7 @@ def manage_frame(app, df):
         crud.update_table(table, filtered_df, 0, rows_per_page)
         crud.update_page_info(current_page_var, page_info_var, filtered_df, rows_per_page)
 
+    
     ttk.Label(frame_filter, text="Giới tính:").pack(side=LEFT)
     ttk.Combobox(frame_filter, textvariable=sex_var, values=["Tất cả", "male", "female"], width=10).pack(side=LEFT, padx=5)
     ttk.Label(frame_filter, text="Hạng vé:").pack(side=LEFT)
@@ -53,6 +54,11 @@ def manage_frame(app, df):
     # ==== Pagination ====
     frame_pagination = ttk.Frame(frame)
     frame_pagination.pack(fill=X, padx=10, pady=5)
+    go_to_page = ttk.IntVar()
+
+    ttk.Label(frame_pagination, text="Đến trang:").pack(side=LEFT)
+    ttk.Entry(frame_pagination, textvariable=go_to_page, width=5).pack(side=LEFT, padx=5)
+    ttk.Button(frame_pagination, text="Đi", command=lambda: crud.go_to_page(filtered_df, go_to_page, current_page_var, rows_per_page, table, page_info_var), bootstyle="primary").pack(side=LEFT, padx=5)
 
     ttk.Button(frame_pagination, text="Trang sau ▶️", command=lambda: crud.next_page(filtered_df, current_page_var, rows_per_page, table, page_info_var), bootstyle="primary").pack(side=RIGHT, padx=5)
     ttk.Button(frame_pagination, text="◀️ Trang trước", command=lambda: crud.previous_page(filtered_df, current_page_var, rows_per_page, table, page_info_var), bootstyle="primary").pack(side=RIGHT, padx=5)

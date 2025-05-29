@@ -30,6 +30,21 @@ def next_page(df, current_page_var, rows_per_page, table, page_info_var):
         update_table(table, df, current_page_var.get(), rows_per_page)
         update_page_info(current_page_var, page_info_var, df, rows_per_page)
 
+def go_to_page(df, goto_page_var, current_page_var, rows_per_page, table, page_info_var):
+    try:
+        page_number = int(goto_page_var.get()) - 1  # vì trang hiển thị bắt đầu từ 1
+        total_pages = (len(df) - 1) // rows_per_page
+
+        if 0 <= page_number <= total_pages:
+            current_page_var.set(page_number)
+            update_table(table, df, page_number, rows_per_page)
+            update_page_info(current_page_var, page_info_var, df, rows_per_page)
+        else:
+            messagebox.showwarning("Cảnh báo", f"Số trang phải từ 1 đến {total_pages + 1}")
+    except Exception as e:
+        messagebox.showerror("Lỗi", f"Số trang không hợp lệ:\n{str(e)}")
+
+
 def filter_data(df, sex_value, pclass_value):
     filtered = df.copy()
     if sex_value != "Tất cả":
