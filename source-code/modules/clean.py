@@ -3,24 +3,12 @@ import numpy as np
 import missingno as msno
 import matplotlib.pyplot as plt
 
-# === Xử lý dữ liệu ===
 
 def merge_and_clean_data(current_df=None):
-    """
-    Clean the dataset. Can work with current dataframe (including user changes) 
-    or merge from original files.
-    
-    Args:
-        current_df: If provided, clean this dataframe. If None, load and merge from original files.
-    
-    Returns the cleaned dataframe and saves it to 'dataset/titanic/cleaned.csv'
-    """
     
     if current_df is not None:
-        print("=== CLEANING CURRENT DATA (including user changes) ===")
         df = current_df.copy()
     else:
-        print("=== LOADING AND MERGING FROM ORIGINAL FILES ===")
         # Load the original 3 files
         train_df = pd.read_csv('dataset/titanic/train.csv')
         test_df = pd.read_csv('dataset/titanic/test.csv')
@@ -44,6 +32,20 @@ def merge_and_clean_data(current_df=None):
     print("\nData types:")
     print(df.dtypes)
     
+    # IMPORTANT: Replace string 'nan' with actual NaN values
+    print("\n=== CONVERTING STRING 'nan' TO ACTUAL NaN ===")
+    for col in df.columns:
+        if df[col].dtype == 'object':
+            nan_count = (df[col] == 'nan').sum()
+            if nan_count > 0:
+                df[col] = df[col].replace('nan', np.nan)
+    
+    # Also handle other common representations of missing values
+    df = df.replace(['', ' ', 'null', 'NULL', 'None', 'none'], np.nan)
+    
+    print("\nAfter string conversion - Missing values:")
+    print(df.isnull().sum())
+    
     # Check for invalid entries in numeric columns
     numeric_cols = df.select_dtypes(include=['int64', 'float64']).columns.tolist()
     invalid_entries = []
@@ -64,38 +66,32 @@ def merge_and_clean_data(current_df=None):
     print("\nSex distribution:")
     print(df['Sex'].value_counts())
     
-    # Fill missing values in Age with median
-    df['Age'] = df['Age'].fillna(df['Age'].median())
+    # === DATA CLEANING LOGIC ===
+    if df['Age'].isnull().sum() > 0:
+        age_median = df['Age'].median()
+        df['Age'] = df['Age'].fillna(age_median)
     
-    # Fill missing values in Fare with median
-    df['Fare'] = df['Fare'].fillna(df['Fare'].median())
+    if df['Fare'].isnull().sum() > 0:
+        fare_median = df['Fare'].median()
+        df['Fare'] = df['Fare'].fillna(fare_median)
+
+    if df['Cabin'].isnull().sum() > 0:
+        if df['Cabin'].notna().any():
+            most_frequent_cabin = df['Cabin'].mode()[0]
+            df['Cabin'] = df['Cabin'].fillna(most_frequent_cabin)
     
-    # Fill missing values in Cabin with most frequent value
-    if df['Cabin'].notna().any():
-        most_frequent_cabin = df['Cabin'].mode()[0]
-        df['Cabin'] = df['Cabin'].fillna(most_frequent_cabin)
+    if df['Embarked'].isnull().sum() > 0:
+        if df['Embarked'].notna().any():
+            most_frequent_embarked = df['Embarked'].mode()[0]
+            df['Embarked'] = df['Embarked'].fillna(most_frequent_embarked)
     
-    # Fill missing values in Embarked with most frequent value
-    if df['Embarked'].notna().any():
-        most_frequent_embarked = df['Embarked'].mode()[0]
-        df['Embarked'] = df['Embarked'].fillna(most_frequent_embarked)
     
-    print("\n=== AFTER CLEANING ===")
-    print("Missing values:")
-    print(df.isnull().sum())
-    print(f"Dataset shape: {df.shape}")
-    
-    # Save cleaned dataset
     df.to_csv('dataset/titanic/cleaned.csv', index=False)
     print("\nCleaned data saved to 'dataset/titanic/cleaned.csv'")
     
     return df
 
 def load_cleaned_data():
-    """
-    Load cleaned data from cleaned.csv
-    If file doesn't exist, return None
-    """
     try:
         df = pd.read_csv('dataset/titanic/cleaned.csv')
         print(f"Loaded cleaned data: {df.shape}")
