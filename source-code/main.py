@@ -11,7 +11,7 @@ import os
 # === Giao diện chính ===
 app = ttk.Window(themename="cosmo")
 app.title("Quản lý dữ liệu Titanic")
-app.geometry("1700x780")
+app.geometry("1800x780")
 
 # === Load dữ liệu ===
 # Check if cleaned.csv exists and ask user preference
@@ -21,14 +21,14 @@ if cleaned_file_exists:
     # Ask user if they want to use cleaned data or original data
     use_cleaned = messagebox.askyesno(
         "Chọn dữ liệu", 
-        "Phát hiện file cleaned.csv đã tồn tại.\n\nBạn có muốn sử dụng dữ liệu đã được clean không?\n\nChọn 'No' để load lại từ 3 file gốc."
+        "Phát hiện file cleaned.csv đã tồn tại.\n\nBạn có muốn sử dụng dữ liệu đã được clean không?\n\nChọn 'No' để load lại từ file gốc."
     )
     
     if use_cleaned:
         df = clean.load_cleaned_data()
         print("Đã load dữ liệu từ cleaned.csv")
     else:
-        print("Loading từ 3 file gốc...")
+        print("Loading từ file gốc...")
         train_df = pd.read_csv('dataset/titanic/train.csv')
         test_df = pd.read_csv('dataset/titanic/test.csv')
         gender_submission_df = pd.read_csv('dataset/titanic/gender_submission.csv')
@@ -36,10 +36,10 @@ if cleaned_file_exists:
         # Nối theo PassengerId để thêm cột Survived
         merged_df = test_df.merge(gender_submission_df, on="PassengerId", how="left")
         df = pd.concat([train_df, merged_df], ignore_index=True)
-        print("Đã load và merge 3 file gốc")
+        print("Đã load và merge file gốc")
 else:
     # No cleaned file exists, load original files
-    print("Không tìm thấy cleaned.csv. Loading từ 3 file gốc...")
+    print("Không tìm thấy cleaned.csv. Loading từ file gốc...")
     train_df = pd.read_csv('dataset/titanic/train.csv')
     test_df = pd.read_csv('dataset/titanic/test.csv')
     gender_submission_df = pd.read_csv('dataset/titanic/gender_submission.csv')
@@ -50,7 +50,7 @@ else:
     print("Đã load và merge 3 file gốc")
 
 # Khung sidebar bên trái
-frame_sidebar = ttk.Frame(app, padding=10, width=300)
+frame_sidebar = ttk.Frame(app, padding=10, width=200)
 frame_sidebar.pack(side=LEFT, fill=Y)
 frame_sidebar.pack_propagate(False)
 
@@ -101,26 +101,24 @@ def clean_data_options():
     choice = messagebox.askyesnocancel(
         "Tùy chọn Clean", 
         "Chọn cách thức clean dữ liệu:\n\n" +
-        "• YES: Clean dữ liệu hiện tại (bao gồm thay đổi của bạn)\n" +
-        "• NO: Clean từ 3 file gốc (bỏ qua thay đổi)\n" +
+        "• YES: Clean dữ liệu hiện tại (bao gồm thay đổi)\n" +
+        "• NO: Clean từ file gốc (bỏ qua thay đổi)\n" +
         "• Cancel: Hủy bỏ"
     )
     
     if choice is None:  # Cancel
         return
     
-    try:
-        messagebox.showinfo("Đang xử lý", "Đang thực hiện cleaning dữ liệu...")
-        
+    try:        
         if choice:  # YES - Clean current data
             clean.merge_and_clean_data(current_df=df)
             messagebox.showinfo("Thành công", 
-                "Đã clean dữ liệu hiện tại (bao gồm thay đổi) và lưu vào cleaned.csv!\n" +
+                "Đã clean dữ liệu hiện tại và lưu vào cleaned.csv!\n" +
                 "Dữ liệu đã được tự động reload.")
         else:  # NO - Clean from original files
             clean.merge_and_clean_data(current_df=None)
             messagebox.showinfo("Thành công", 
-                "Đã clean từ 3 file gốc và lưu vào cleaned.csv!\n" +
+                "Đã clean từ file gốc và lưu vào cleaned.csv!\n" +
                 "Dữ liệu đã được tự động reload.")
         
         reload_data()
@@ -129,7 +127,7 @@ def clean_data_options():
 
 ttk.Button(
     frame_sidebar,
-    text="🧹 Clean dữ liệu",
+    text="🧹 Làm sạch dữ liệu",
     command=clean_data_options,
     bootstyle="warning"
 ).pack(pady=5, fill=X)
