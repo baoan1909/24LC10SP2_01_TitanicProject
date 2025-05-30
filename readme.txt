@@ -3,15 +3,13 @@
 ## 📋 Thông tin đề tài
 **STT:** [Điền số thứ tự]  
 **Tên đề tài:** Quản lý và Phân tích Dữ liệu Titanic với Chức năng Clean  
-**Lớp học phần:** 24LC10SP2_01  
-**Năm học:** HK1/2024-2025  
+**Lớp học phần:** 2427IPPA233277_04  
+**Năm học:** HK2/2024-2026 
 
 ## 👥 Thông tin nhóm
-1. **Trưởng nhóm:** [Họ tên] ([MSSV]) – [SĐT] – [Email]
-2. **Thành viên 2:** [Họ tên] ([MSSV])
-3. **Thành viên 3:** [Họ tên] ([MSSV])
-4. **Thành viên 4:** [Họ tên] ([MSSV])
-5. **Thành viên 5:** [Họ tên] ([MSSV])
+1. **Trưởng nhóm:** [Võ Văn Tú] ([24810046])
+2. **Thành viên 2:** [Đỗ Bảo Ân] ([24810022])
+3. **Thành viên 3:** [Mai Da Duy] ([24810028])
 
 ## 🎯 Mô tả dự án
 Ứng dụng quản lý và phân tích dữ liệu hành khách tàu Titanic với giao diện đồ họa hiện đại, 

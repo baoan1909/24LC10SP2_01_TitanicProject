@@ -1,28 +1,43 @@
 from tkinter import messagebox
 
+# entry_vars một từ điển chứa dữ liệu nhập vào từ Entry
+# table là bảng dữ liệu liệu Treeview
+# df dữ liệu Dataframe
+# page số trang, rows_per_page số dòng trên một trang
+# current_page_var Số trang thay đổi
+# page_info_var thông tin về số trang hiện tại và tổng số trang
+# goto_page_var số trang muốn đến
+# sex_value, pclass_value giá trị của bộ lọc
+
+
+# Dọn dẹp ô nhập dữ liệu
 def clear_form(entry_vars):
     for var in entry_vars.values():
         var.set("")
 
-def update_table(tree, df, page=0, rows_per_page=50):
-    tree.delete(*tree.get_children())
+# Cập nhật dữ liệu bảng
+def update_table(table, df, page=0, rows_per_page=50):
+    table.delete(*table.get_children())
     start = page * rows_per_page
     end = start + rows_per_page
     page_data = df.iloc[start:end]
     for _, row in page_data.iterrows():
-        tree.insert('', 'end', values=list(row))
+        table.insert('', 'end', values=list(row))
 
+# Cập nhật hiển thị số trang
 def update_page_info(current_page_var, page_info_var, df, rows_per_page):
     total_pages = (len(df) - 1) // rows_per_page + 1
     current = current_page_var.get() + 1
     page_info_var.set(f"Trang {current} / {total_pages}")
 
+# Lùi trang
 def previous_page(df, current_page_var, rows_per_page, table, page_info_var):
     if current_page_var.get() > 0:
         current_page_var.set(current_page_var.get() - 1)
         update_table(table, df, current_page_var.get(), rows_per_page)
         update_page_info(current_page_var, page_info_var, df, rows_per_page)
 
+# Trang tiếp theo
 def next_page(df, current_page_var, rows_per_page, table, page_info_var):
     total_pages = (len(df) - 1) // rows_per_page
     if current_page_var.get() < total_pages:
@@ -30,6 +45,7 @@ def next_page(df, current_page_var, rows_per_page, table, page_info_var):
         update_table(table, df, current_page_var.get(), rows_per_page)
         update_page_info(current_page_var, page_info_var, df, rows_per_page)
 
+# Điền số trang muốn đến và đi đến trang đó
 def go_to_page(df, goto_page_var, current_page_var, rows_per_page, table, page_info_var):
     try:
         page_number = int(goto_page_var.get()) - 1  # vì trang hiển thị bắt đầu từ 1
@@ -44,6 +60,7 @@ def go_to_page(df, goto_page_var, current_page_var, rows_per_page, table, page_i
     except Exception as e:
         messagebox.showerror("Lỗi", f"Số trang không hợp lệ:\n{str(e)}")
 
+# Lọc Dữ liệu
 def filter_data(df, sex_value, pclass_value, keyword):
     filtered = df.copy()
     if sex_value != "Tất cả":
@@ -59,7 +76,8 @@ def filter_data(df, sex_value, pclass_value, keyword):
             filtered = filtered[filtered["Name"].str.lower().str.contains(keyword, na=False)]
     return filtered
 
-def add_row(df, cols, entry_vars, tree):
+# Thêm mới dữ liệu
+def add_row(df, cols, entry_vars, table):
     try:
         new_data = {col: entry_vars[col].get() for col in cols if col != 'PassengerId'}
 
@@ -74,20 +92,21 @@ def add_row(df, cols, entry_vars, tree):
         new_data['Fare'] = float(new_data['Fare'])
 
         df.loc[len(df)] = new_data
-        update_table(tree, df)
+        update_table(table, df)
         clear_form(entry_vars)
 
         messagebox.showinfo("Thành công", "Thêm hành khách thành công!")
     except Exception as e:
         messagebox.showerror("Lỗi", f"Dữ liệu không hợp lệ:\n{str(e)}")
 
-def edit_row(df, cols, entry_vars, tree):
-    selected = tree.selection()
+# cập nhật dữ liệu
+def edit_row(df, cols, entry_vars, table):
+    selected = table.selection()
     if not selected:
         messagebox.showwarning("Chưa chọn dòng", "Vui lòng chọn dòng cần sửa.")
         return
     try:
-        passenger_id = int(tree.item(selected[0])['values'][0])
+        passenger_id = int(table.item(selected[0])['values'][0])
         idx = df[df['PassengerId'] == passenger_id].index[0]
 
         for col in cols:
@@ -99,14 +118,15 @@ def edit_row(df, cols, entry_vars, tree):
             else:
                 df.at[idx, col] = val
 
-        update_table(tree, df)
+        update_table(table, df)
         clear_form(entry_vars)
         messagebox.showinfo("Thành công", "Cập nhật thành công!")
     except Exception as e:
         messagebox.showerror("Lỗi", f"Không thể cập nhật:\n{str(e)}")
 
-def delete_row(df, tree, entry_vars):
-    selected = tree.selection()
+# xóa một bản ghi
+def delete_row(df, table, entry_vars):
+    selected = table.selection()
     if not selected:
         messagebox.showwarning("Chưa chọn dòng", "Vui lòng chọn dòng cần xoá.")
         return
@@ -117,24 +137,24 @@ def delete_row(df, tree, entry_vars):
         return
 
     try:
-        passenger_id = int(tree.item(selected[0])['values'][0])
+        passenger_id = int(table.item(selected[0])['values'][0])
 
         idx = df[df['PassengerId'] == passenger_id].index[0]
 
         df.drop(idx, inplace=True)
         df.reset_index(drop=True, inplace=True)
 
-        update_table(tree, df)
+        update_table(table, df)
         clear_form(entry_vars)
         messagebox.showinfo("Thành công", "Đã xoá hành khách.")
     except Exception as e:
         messagebox.showerror("Lỗi", f"Không thể xoá:\n{str(e)}")
 
-
-def on_row_select(event, tree, cols, entry_vars):
-    selected = tree.selection()
+# chọn một bản ghi
+def on_row_select(event,table, cols, entry_vars):
+    selected = table.selection()
     if selected:
-        values = tree.item(selected[0])['values']
+        values = table.item(selected[0])['values']
         for col, val in zip(cols, values):
             entry_vars[col].set(val)
 

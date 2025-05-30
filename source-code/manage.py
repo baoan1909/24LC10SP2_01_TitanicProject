@@ -12,7 +12,7 @@ def manage_frame(app, df):
 
     frame = ttk.Frame(app)
 
-    # ==== Filter ====
+    # ==== Lọc dữ liệu ====
     frame_filter = ttk.Frame(frame, padding=10)
     frame_filter.pack(fill=X)
 
@@ -46,7 +46,7 @@ def manage_frame(app, df):
 
     for col in cols:
         table.heading(col, text=col)
-        table.column(col, width=120, anchor='center')
+        table.column(col, width=80, anchor='center')
 
     scroll_y = ttk.Scrollbar(frame_table, orient='vertical', command=table.yview)
     table.configure(yscrollcommand=scroll_y.set)
@@ -55,7 +55,7 @@ def manage_frame(app, df):
 
     crud.update_table(table, df, current_page_var.get(), rows_per_page)
 
-    # ==== Pagination ====
+    # ==== Phân trang ====
     frame_pagination = ttk.Frame(frame)
     frame_pagination.pack(fill=X, padx=10, pady=5)
     go_to_page = ttk.IntVar()
