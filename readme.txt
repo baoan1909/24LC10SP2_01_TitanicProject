@@ -11,6 +11,9 @@
 2. **Thành viên 2:** [Đỗ Bảo Ân] ([24810022])
 3. **Thành viên 3:** [Mai Da Duy] ([24810028])
 
+## Video báo cáo
+  https://drive.google.com/drive/folders/1OC_AIfH8PZmF8hjpY7QH5d0SiY7aQIcP?usp=drive_link
+
 ## 🎯 Mô tả dự án
 Ứng dụng quản lý và phân tích dữ liệu hành khách tàu Titanic với giao diện đồ họa hiện đại, 
 cung cấp các chức năng CRUD (Create, Read, Update, Delete), làm sạch dữ liệu, và trực quan hóa 
